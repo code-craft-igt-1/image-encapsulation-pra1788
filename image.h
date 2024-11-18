@@ -1,23 +1,41 @@
 #pragma once
 #include <cstdint>
-#include <iostream>
 #include <memory>
+#include <stdexcept>
 
 class Image {
  public:
-    Image(uint16_t rows, uint16_t columns): m_rows(rows), m_columns(columns) {
-        pixels = std::make_unique<uint8_t[]>(rows * columns);
+    Image(uint16_t rows, uint16_t columns) : m_rows(rows), m_columns(columns) {
+        if (rows > 1024 || columns > 1024) {
+            throw std::invalid_argument("Image dimensions exceed the 1024x1024 limit.");
+        }
+        m_pixels =
+            std::make_unique<uint8_t[]>(static_cast<size_t>(rows) * static_cast<size_t>(columns));
     }
-    ~Image() {
-        std::cout << "Image destroyed. Pixel memory automatically freed.\n";
-    }
+
     uint8_t GetPixel(uint16_t x, uint16_t y) const {
-        return pixels[x * m_columns + y];
+        if (x >= m_rows || y >= m_columns) {
+            throw std::out_of_range("Pixel coordinates are out of bounds.");
+        }
+        return m_pixels[static_cast<size_t>(x) * static_cast<size_t>(m_columns) + y];
     }
+
     void SetPixel(uint16_t x, uint16_t y, uint8_t value) {
-        pixels[x * m_columns + y] = value;
+        if (x >= m_rows || y >= m_columns) {
+            throw std::out_of_range("Pixel coordinates are out of bounds.");
+        }
+        m_pixels[static_cast<size_t>(x) * static_cast<size_t>(m_columns) + y] = value;
     }
+
+    bool IsValid() const {
+        return m_rows <= 1024 && m_columns <= 1024;
+    }
+
+    uint16_t GetRows() const { return m_rows; }
+    uint16_t GetColumns() const { return m_columns; }
+
+ private:
     const uint16_t m_rows;
     const uint16_t m_columns;
-    std::unique_ptr<uint8_t[]> pixels;  // max 1k x 1k image
+    std::unique_ptr<uint8_t[]> m_pixels;  // stores the pixel data
 };
