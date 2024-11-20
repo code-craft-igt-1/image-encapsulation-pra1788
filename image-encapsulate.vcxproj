@@ -151,12 +151,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="brightener.cpp" />
-    <ClCompile Include="image-encapsulate.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="brightener.h" />
-    <ClInclude Include="image.h" />
+    <ClInclude Include="ImageBrightener.h" />
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="ImageProcessor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
